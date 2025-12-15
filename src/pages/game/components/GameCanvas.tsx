@@ -364,18 +364,21 @@ export default function GameCanvas({ theme, questionTheme, answeredCorrectly }: 
         </div>
 
         {/* Ana platform - 3 katmanlı tasarım */}
+        <div className="relative">
           {/* Üst dekoratif şerit */}
           <div className={`h-3 ${
-                    left: 13%;
-                    opacity: 1;
+            theme === 'positive'
+              ? 'bg-gradient-to-r from-yellow-500 via-amber-400 to-orange-500'
+              : theme === 'negative'
               ? 'bg-gradient-to-r from-gray-400 via-slate-400 to-gray-400'
               : 'bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-400'
-                    left: 13%;
+          } shadow-lg relative overflow-hidden`}>
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent animate-shimmer"></div>
             {[...Array(15)].map((_, i) => (
               <div
                 key={i}
                 className="absolute top-1/2 w-1 h-1 bg-white rounded-full animate-pulse"
+                style={{
                   left: `${i * 6.66}%`,
                   animationDelay: `${i * 0.2}s`
                 }}
