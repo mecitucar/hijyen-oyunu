@@ -3,13 +3,23 @@ import { useNavigate } from 'react-router-dom';
 interface GameOverProps {
   score: number;
   totalQuestions: number;
+  usedSeconds?: number;
+  totalDuration?: number;
   onRestart: () => void;
 }
 
-export default function GameOver({ score, totalQuestions, onRestart }: GameOverProps) {
+export default function GameOver({ score, totalQuestions, usedSeconds, totalDuration, onRestart }: GameOverProps) {
   const navigate = useNavigate();
   const maxScore = totalQuestions * 10;
-  const percentage = (score / maxScore) * 100;
+  // If usedSeconds is provided (game ended early due to lives), scale the effective max score
+  // by the fraction of time used. If not provided, assume full duration used (no scaling).
+  let effectiveMax = maxScore;
+  if (typeof usedSeconds === 'number' && typeof totalDuration === 'number' && totalDuration > 0) {
+    const frac = Math.max(0, Math.min(1, usedSeconds / totalDuration));
+    effectiveMax = Math.max(1, Math.round(maxScore * frac));
+  }
+
+  const percentage = Math.max(0, Math.min(100, (score / effectiveMax) * 100));
 
   const getMessage = () => {
     if (percentage >= 80) return { text: 'Mükemmel!', icon: 'ri-trophy-line', color: 'from-yellow-400 to-amber-500' };

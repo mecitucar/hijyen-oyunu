@@ -8,7 +8,9 @@ import { generateQuestions, generateQuestionsAsync } from '../../utils/questionG
 export default function GamePage() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
-  const [lives, setLives] = useState(3);
+  const [lives, setLives] = useState(5);
+  const [correctCount, setCorrectCount] = useState(0);
+  const [incorrectCount, setIncorrectCount] = useState(0);
   const START_SECONDS = 120; // 2 minutes countdown
   const [secondsLeft, setSecondsLeft] = useState(START_SECONDS);
   const [gameState, setGameState] = useState<'playing' | 'gameover'>('playing');
@@ -72,15 +74,19 @@ export default function GamePage() {
 
   const handleAnswer = (isCorrect: boolean) => {
     setAnsweredCorrectly(isCorrect);
+    console.log('handleAnswer called:', { isCorrect, currentQuestion, correctCount, incorrectCount });
     
     if (isCorrect) {
       setScore(score + 10);
+      setCorrectCount(c => c + 1);
       setBackgroundTheme('positive');
     } else {
       setScore(Math.max(0, score - 5));
       setLives(lives - 1);
+      setIncorrectCount(c => c + 1);
       setBackgroundTheme('negative');
     }
+    console.log('after update (queued):', { correctCount, incorrectCount });
   };
 
   const nextQuestion = () => {
@@ -101,7 +107,9 @@ export default function GamePage() {
   const restartGame = () => {
     setCurrentQuestion(0);
     setScore(0);
-    setLives(3);
+    setLives(5);
+    setCorrectCount(0);
+    setIncorrectCount(0);
     setGameState('playing');
     setBackgroundTheme('neutral');
     setAnsweredCorrectly(null);
@@ -123,7 +131,8 @@ export default function GamePage() {
   };
 
   if (gameState === 'gameover') {
-    return <GameOver score={score} totalQuestions={questions.length} onRestart={restartGame} />;
+    const usedSeconds = START_SECONDS - secondsLeft;
+    return <GameOver score={score} totalQuestions={questions.length} usedSeconds={usedSeconds} totalDuration={START_SECONDS} onRestart={restartGame} />;
   }
 
   return (
@@ -141,8 +150,8 @@ export default function GamePage() {
         <GameHeader
           score={score}
           lives={lives}
-          currentQuestion={currentQuestion + 1}
-          totalQuestions={questions.length}
+          correctCount={correctCount}
+          incorrectCount={incorrectCount}
           elapsedSeconds={secondsLeft}
         />
         

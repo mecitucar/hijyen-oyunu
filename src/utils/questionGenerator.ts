@@ -1,6 +1,7 @@
 // Lightweight question generator utility
 // Produces simple, varied question objects when no external API is used.
 
+import { allQuestions as MOCK_QUESTIONS } from '../mocks/questions';
 function randInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -60,49 +61,18 @@ const TEMPLATES: Template[] = [
 ];
 
 export function generateQuestions(count = 6): Question[] {
-  const questions: Question[] = [];
   const now = Date.now();
+  const pool = MOCK_QUESTIONS.slice();
+  shuffle(pool);
+  const out: Question[] = [];
   for (let i = 0; i < count; i++) {
-    const tplIndex = randInt(0, TEMPLATES.length - 1);
-    const tplObj = TEMPLATES[tplIndex];
+    const src = pool[i % pool.length];
     const id = `q_${now}_${i}_${Math.floor(Math.random() * 10000)}`;
-    const text = typeof tplObj.tpl === 'function' ? tplObj.tpl(0) : String(tplObj.tpl);
-    const correct = tplObj.correct;
-    const distractors = tplObj.distractors ? tplObj.distractors.slice(0) : [];
-
-    // Extra distractor pool to ensure we can always produce 3 wrong options
-    const EXTRA_DISTRACTORS = [
-      'Sadece suyla durulamak',
-      'Sadece güneşte bekletmek',
-      'Sadece parmak uçlarını yıkamak',
-      'Hiçbir şey yapmamak',
-      'Sadece ambalajı kontrol etmek',
-      'Sadece görünüşüne bakmak',
-      'Sadece fiyatına bakmak',
-      'Sadece rengini kontrol etmek'
-    ];
-
-    // Start with template distractors, then fill from extras without duplicating
-    const pool: string[] = [];
-    const addIfUnique = (s: string) => {
-      if (!s) return;
-      if (s === correct) return;
-      if (pool.includes(s)) return;
-      pool.push(s);
-    };
-
-    // add template distractors
-    shuffle(distractors).forEach(d => addIfUnique(d));
-    // fill from extra pool if needed
-    shuffle(EXTRA_DISTRACTORS).forEach(d => { if (pool.length < 3) addIfUnique(d); });
-
-    // ensure we have exactly 3 distractors
-    const finalDistractors = pool.slice(0, 3);
-    const options = shuffle([correct, ...finalDistractors]).slice(0, 4);
-    const theme = tplObj.theme || 'hijyen';
-    questions.push({ id, question: text, options, correctAnswer: options.indexOf(correct), theme, difficulty: 'easy' });
+    const opts = shuffle(src.options.slice());
+    const correctIndex = opts.indexOf(src.options[src.correctAnswer]);
+    out.push({ id, question: src.question, options: opts, correctAnswer: correctIndex, theme: src.theme || 'general', difficulty: 'easy' });
   }
-  return questions;
+  return out;
 }
 
 export default { generateQuestions };

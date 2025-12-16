@@ -1,12 +1,12 @@
 interface GameHeaderProps {
   score: number;
   lives: number;
-  currentQuestion: number;
-  totalQuestions: number;
+  correctCount: number;
+  incorrectCount: number;
   elapsedSeconds?: number;
 }
 
-export default function GameHeader({ score, lives, currentQuestion, totalQuestions, elapsedSeconds = 0 }: GameHeaderProps) {
+export default function GameHeader({ score, lives, correctCount, incorrectCount, elapsedSeconds = 0 }: GameHeaderProps) {
   const fmt = (s: number) => {
     const m = Math.floor(s / 60).toString().padStart(2, '0');
     const sec = (s % 60).toString().padStart(2, '0');
@@ -18,18 +18,31 @@ export default function GameHeader({ score, lives, currentQuestion, totalQuestio
         <div className="flex items-center justify-between">
 
           {/* Left group: Soru (moved to left) */}
-          <div className="flex items-center gap-3 ml-20">
-            <div className="w-12 h-12 flex items-center justify-center rounded-xl relative" style={{ background: 'linear-gradient(135deg,#a78bfa 0%,#7c3aed 100%)', boxShadow: '0 6px 18px rgba(124,58,237,0.12)' }}>
-              <div className="absolute inset-0 rounded-xl" style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08)', mixBlendMode: 'overlay' }} />
-              <i className="ri-question-line text-2xl text-white drop-shadow-sm"></i>
+          <div className="flex items-center gap-4 ml-20">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 flex items-center justify-center rounded-xl relative" style={{ background: 'linear-gradient(135deg,#a78bfa 0%,#7c3aed 100%)', boxShadow: '0 6px 18px rgba(124,58,237,0.12)' }}>
+                <div className="absolute inset-0 rounded-xl" style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08)', mixBlendMode: 'overlay' }} />
+                <i className="ri-check-line text-2xl text-white drop-shadow-sm"></i>
+              </div>
+              <div>
+                <p className="text-xs font-medium text-gray-500">Doğru</p>
+                <p className="text-lg font-bold text-gray-800">
+                  <span className="inline-block bg-purple-50 px-3 py-1 rounded-full text-purple-700 font-semibold shadow-sm">{correctCount}</span>
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-xs font-medium text-gray-500">Soru</p>
-              <p className="text-xl font-bold text-gray-800">
-                <span className="inline-block bg-purple-50 px-3 py-1 rounded-full text-purple-700 font-semibold shadow-sm">{currentQuestion}</span>
-                <span className="text-gray-400 mx-2">/</span>
-                <span className="inline-block text-gray-500">{totalQuestions}</span>
-              </p>
+
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 flex items-center justify-center rounded-xl relative" style={{ background: 'linear-gradient(135deg,#f87171 0%,#ef4444 100%)', boxShadow: '0 6px 18px rgba(239,68,68,0.12)' }}>
+                <div className="absolute inset-0 rounded-xl" style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08)', mixBlendMode: 'overlay' }} />
+                <i className="ri-close-line text-2xl text-white drop-shadow-sm"></i>
+              </div>
+              <div>
+                <p className="text-xs font-medium text-gray-500">Yanlış</p>
+                <p className="text-lg font-bold text-gray-800">
+                  <span className="inline-block bg-rose-50 px-3 py-1 rounded-full text-rose-700 font-semibold shadow-sm">{incorrectCount}</span>
+                </p>
+              </div>
             </div>
           </div>
 
@@ -43,7 +56,7 @@ export default function GameHeader({ score, lives, currentQuestion, totalQuestio
               <div>
                 <p className="text-xs font-medium text-gray-500">Canlar</p>
                 <div className="flex gap-1 mt-1">
-                  {[...Array(3)].map((_, i) => (
+                  {[...Array(5)].map((_, i) => (
                     <i
                       key={i}
                       className={`ri-heart-3-fill text-xl ${i < lives ? 'text-rose-500' : 'text-gray-300'}`}
