@@ -16,8 +16,8 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Install dependencies (no optional)
+        run: npm ci --no-optional
 
       - name: Build (set base path relative)
         run: |
