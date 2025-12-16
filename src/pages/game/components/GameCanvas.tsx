@@ -15,7 +15,7 @@ export default function GameCanvas({ theme, questionTheme, answeredCorrectly }: 
   const [isHidingWrong, setIsHidingWrong] = useState(false);
   const [isHidingCelebration, setIsHidingCelebration] = useState(false);
   const [useGroundImg, setUseGroundImg] = useState(true);
-  const [groundSrc, setGroundSrc] = useState('/ground.svg');
+  const [groundSrc, setGroundSrc] = useState('ground.v2.svg');
   const [treeOffset, setTreeOffset] = useState(120); // px from bottom (slightly lower than before)
   const [autoLowering, setAutoLowering] = useState(false); // disabled by default
   const lowerIntervalRef = useRef<number | null>(null);
@@ -323,20 +323,28 @@ export default function GameCanvas({ theme, questionTheme, answeredCorrectly }: 
       </div>
 
       {/* Orta plan - çim ve doğa (kullanılabilir bir ground görseli varsa /ground.png kullanılacak, yoksa fallback gradient) */}
-      {useGroundImg ? (
-        <img
-          src={groundSrc}
-          alt="ground"
-          className="absolute left-0 right-0 h-96 w-full object-cover z-0"
-          style={{ bottom: '-56px', animation: 'groundEnter 600ms cubic-bezier(.2,.9,.2,1) both' }}
-          onError={() => {
-            if (groundSrc === '/ground.svg') {
-              setGroundSrc('/ground.png');
-            } else {
-              setUseGroundImg(false);
-            }
-          }}
-        />
+            {useGroundImg ? (
+        <div className="absolute left-0 right-0 h-96 w-full z-0" style={{ bottom: '-56px', animation: 'groundEnter 600ms cubic-bezier(.2,.9,.2,1) both' }}>
+          <svg width="1200" height="300" viewBox="0 120 1200 180" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax slice" className="w-full h-full">
+            <defs>
+              <linearGradient id="g1" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stopColor="#6BBF1A" />
+                <stop offset="100%" stopColor="#57A80E" />
+              </linearGradient>
+              <linearGradient id="g2" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stopColor="#7FD02A" />
+                <stop offset="100%" stopColor="#5EB10F" />
+              </linearGradient>
+              <linearGradient id="g3" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stopColor="#8CE63F" />
+                <stop offset="100%" stopColor="#69C023" />
+              </linearGradient>
+            </defs>
+            <rect x="0" y="180" width="1200" height="120" fill="url(#g1)" />
+            <path d="M0 200 C150 170 300 210 480 200 C660 190 820 230 1000 210 C1100 200 1200 190 1200 190 L1200 300 L0 300 Z" fill="url(#g2)" />
+            <path d="M0 220 C120 200 260 240 420 230 C560 220 700 260 880 240 C980 230 1100 230 1200 230 L1200 300 L0 300 Z" fill="url(#g3)" />
+          </svg>
+        </div>
       ) : (
         <div className="absolute left-0 right-0 h-96 bg-gradient-to-t from-green-500/40 via-emerald-400/30 to-transparent" style={{ bottom: '-56px' }}></div>
       )}
@@ -702,3 +710,4 @@ export default function GameCanvas({ theme, questionTheme, answeredCorrectly }: 
     </div>
   );
 }
+
