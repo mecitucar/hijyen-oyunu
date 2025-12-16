@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-{
-  "version": 2,
-  "name": "hijyen-oyunu",
-  "routes": [
-    { "src": "/api/(.*)", "dest": "/api/$1" },
-    { "src": "/(.*)", "dest": "/index.html" }
-  ]
-}
-=======
 {
   "version": 2,
   "name": "hijyen-oyunu",
@@ -21,4 +11,3 @@
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
->>>>>>> recovered-work
